@@ -7,7 +7,6 @@
      Every other size below derives from it so the whole clock scales
      in lockstep regardless of viewport/zoom, instead of mixing vmin/px/%. */
   --u: 5px;
-  --dot-size-ring: calc(var(--u) * 2.3);
 
   /* Ring radii as % of the clock box, read by clock.js when it builds the
      rings. Lower the gap between them by moving these two closer together. */
@@ -16,7 +15,6 @@
 
   /* Tracking between HH:MM:SS characters. Negative = tighter, positive = looser. */
   --letter-spacing: -0.05em;
-  --font-size: calc(var(--u) * 15);
 }
 
 
@@ -54,6 +52,9 @@ html, body {
   align-items: center;
   justify-content: center;
   user-select: none;
+  /* No clickable elements in this app, so the whole window can act as a
+     drag handle now that the native title bar is hidden. */
+  -webkit-app-region: drag;
 }
 
 /* Time format switch: set data-format="hhmm" on <html> in index.html to
@@ -92,6 +93,15 @@ html[data-theme="dark"] {
   position: relative;
   width: min(72vmin, 560px);
   height: min(72vmin, 560px);
+
+  /* Declared here (not :root) on purpose: JS sets --u as an inline style
+     on this element, which only overrides --u for #clock and its
+     descendants. A custom property that references var(--u) is resolved
+     at the element it's declared on — declaring these at :root would
+     keep reading :root's own static --u fallback forever, never picking
+     up the live value. */
+  --dot-size-ring: calc(var(--u) * 2.3);
+  --font-size: calc(var(--u) * 15);
 }
 
 .ring {
