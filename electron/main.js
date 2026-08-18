@@ -1,4 +1,4 @@
-const { app, BrowserWindow, nativeTheme } = require("electron");
+const { app, BrowserWindow, nativeTheme, Menu } = require("electron");
 const path = require("path");
 
 const BG_DARK = "#06080B";
@@ -6,6 +6,28 @@ const BG_LIGHT = "#F1F2F7";
 
 function currentBg() {
   return nativeTheme.shouldUseDarkColors ? BG_DARK : BG_LIGHT;
+}
+
+function buildMenu(win) {
+  const menu = Menu.buildFromTemplate([
+    { role: "appMenu" },
+    {
+      label: "Window",
+      submenu: [
+        {
+          label: "Always on Top",
+          type: "checkbox",
+          accelerator: "CmdOrCtrl+T",
+          checked: false,
+          click: (menuItem) => win.setAlwaysOnTop(menuItem.checked),
+        },
+        { type: "separator" },
+        { role: "minimize" },
+        { role: "close" },
+      ],
+    },
+  ]);
+  Menu.setApplicationMenu(menu);
 }
 
 function createWindow() {
@@ -18,6 +40,7 @@ function createWindow() {
   });
   win.setAspectRatio(1);
   win.loadFile(path.join(__dirname, "web", "index.html"));
+  buildMenu(win);
 
   nativeTheme.on("updated", () => {
     win.setBackgroundColor(currentBg());
