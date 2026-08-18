@@ -1,0 +1,142 @@
+:root {
+  --c: 222;
+  --dot-off: hsl(var(--c), 100%, 10%);
+  --dot-on: hsl(var(--c), 100%, 58%);
+  --bg: rgb(6, 8, 11);
+  /* --u is set in JS to 1% of the rendered .clock box size (in px).
+     Every other size below derives from it so the whole clock scales
+     in lockstep regardless of viewport/zoom, instead of mixing vmin/px/%. */
+  --u: 5px;
+  --dot-size-ring: calc(var(--u) * 2.3);
+
+  /* Ring radii as % of the clock box, read by clock.js when it builds the
+     rings. Lower the gap between them by moving these two closer together. */
+  --ring-hours-radius: 43;
+  --ring-seconds-radius: 39;
+
+  /* Tracking between HH:MM:SS characters. Negative = tighter, positive = looser. */
+  --letter-spacing: -0.05em;
+  --font-size: calc(var(--u) * 15);
+}
+
+
+/* Sourced the same way as the dashboard's tile font: relies on DM Mono
+   being installed locally, no network/CDN dependency. One @font-face per
+   installed weight is required — with only one declared, the browser has
+   nothing else to match font-weight against and just ignores it. */
+@font-face {
+  font-family: "DM Mono";
+  src: local("DM Mono Light");
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: "DM Mono";
+  src: local("DM Mono Regular"), local("DM Mono");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "DM Mono";
+  src: local("DM Mono Medium");
+  font-weight: 500;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+/* Time format switch: set data-format="hhmm" on <html> in index.html to
+   hide seconds. JS keeps computing/rendering them regardless — this only
+   controls visibility. */
+html[data-format="hhmm"] .seconds-group {
+  display: none;
+}
+
+/* Theme follows the OS by default (prefers-color-scheme). Set
+   data-theme="light"/"dark" on <html> in index.html to force one
+   regardless of the system setting — the attribute selectors below have
+   higher specificity than the media query, so they always win when
+   present. */
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: rgb(241, 242, 247);
+    --dot-off: hsl(var(--c), 20%, 87%);
+    --dot-on: hsl(var(--c), 100%, 45%);
+  }
+}
+
+html[data-theme="light"] {
+  --bg: rgb(241, 242, 247);
+  --dot-off: hsl(var(--c), 20%, 87%);
+  --dot-on: hsl(var(--c), 100%, 45%);
+}
+
+html[data-theme="dark"] {
+  --bg: rgb(6, 8, 11);
+  --dot-off: hsl(var(--c), 100%, 10%);
+  --dot-on: hsl(var(--c), 100%, 58%);
+}
+
+.clock {
+  position: relative;
+  width: min(72vmin, 560px);
+  height: min(72vmin, 560px);
+}
+
+.ring {
+  position: absolute;
+  inset: 0;
+}
+
+.ring .dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 50%;
+  background: var(--dot-off);
+  transform: translate(-50%, -50%);
+  width: var(--dot-size-ring);
+  height: var(--dot-size-ring);
+}
+
+.ring-hours .dot {
+  background: var(--dot-on);
+}
+
+.ring-seconds .dot.lit {
+  background: var(--dot-on);
+}
+
+.face {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.time-text {
+  font-family: "DM Mono", monospace;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  font-size: var(--font-size);
+  letter-spacing: var(--letter-spacing);
+  color: var(--dot-on);
+}
+
+.colon-char.off {
+  opacity: 0;
+}

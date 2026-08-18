@@ -42,3 +42,18 @@ feature/easter-egg in `boatcam-dashboard` or `backhaul-antenna-mapper-dev`.
 
 `embed.html` is a generated build artifact and is gitignored — regenerate
 it fresh whenever you need a copy to hand off.
+
+## macOS app
+
+`electron/` wraps the same clock in a native window via Electron (a
+learning exercise — not code-signed/notarized, unsigned local builds
+only). It uses its own copy of `index.html`/`style.css`/`clock.js` under
+`electron/web/`; re-copy those three files there after changing the core
+clock.
+
+```bash
+cd electron
+npm install
+npm start        # run in dev
+npm run dist      # build an unsigned .app/.dmg into electron/dist/
+```

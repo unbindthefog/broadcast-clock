@@ -1,0 +1,24 @@
+{
+  "name": "broadcast-clock-app",
+  "version": "1.0.0",
+  "description": "Broadcast Clock as a native macOS app",
+  "main": "main.js",
+  "author": "Jan Becker",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^32.0.0",
+    "electron-builder": "^25.0.0"
+  },
+  "build": {
+    "appId": "com.broadcastclock.app",
+    "productName": "Broadcast Clock",
+    "files": ["main.js", "web/**/*", "package.json"],
+    "mac": {
+      "category": "public.app-category.utilities"
+    }
+  }
+}
