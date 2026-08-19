@@ -8,9 +8,32 @@ function currentBg() {
   return nativeTheme.shouldUseDarkColors ? BG_DARK : BG_LIGHT;
 }
 
+function setTimeFormat(win, format) {
+  win.webContents.executeJavaScript(
+    `document.documentElement.setAttribute("data-format", ${JSON.stringify(format)})`
+  );
+}
+
 function buildMenu(win) {
   const menu = Menu.buildFromTemplate([
     { role: "appMenu" },
+    {
+      label: "View",
+      submenu: [
+        {
+          label: "HH:MM:SS",
+          type: "radio",
+          checked: true,
+          click: () => setTimeFormat(win, "hhmmss"),
+        },
+        {
+          label: "HH:MM",
+          type: "radio",
+          checked: false,
+          click: () => setTimeFormat(win, "hhmm"),
+        },
+      ],
+    },
     {
       label: "Window",
       submenu: [
@@ -32,8 +55,8 @@ function buildMenu(win) {
 
 function createWindow() {
   const win = new BrowserWindow({
-    width: 700,
-    height: 700,
+    width: 300,
+    height: 300,
     title: "Broadcast Clock",
     titleBarStyle: "hiddenInset",
     backgroundColor: currentBg(),
