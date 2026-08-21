@@ -14,7 +14,30 @@ function setTimeFormat(win, format) {
   );
 }
 
-function buildMenu(win) {
+// null = follow the system (see the nativeTheme "updated" handler in
+// createWindow); "light"/"dark" = user override from the menu below.
+function setTheme(win, theme, state) {
+  state.themeOverride = theme;
+  if (theme === null) {
+    win.webContents.executeJavaScript(
+      `document.documentElement.removeAttribute("data-theme")`
+    );
+    win.setBackgroundColor(currentBg());
+  } else {
+    win.webContents.executeJavaScript(
+      `document.documentElement.setAttribute("data-theme", ${JSON.stringify(theme)})`
+    );
+    win.setBackgroundColor(theme === "dark" ? BG_DARK : BG_LIGHT);
+  }
+}
+
+function setColor(win, hue) {
+  win.webContents.executeJavaScript(
+    `document.documentElement.style.setProperty("--c", ${JSON.stringify(String(hue))})`
+  );
+}
+
+function buildMenu(win, state) {
   const menu = Menu.buildFromTemplate([
     { role: "appMenu" },
     {
@@ -31,6 +54,38 @@ function buildMenu(win) {
           type: "radio",
           checked: false,
           click: () => setTimeFormat(win, "hhmm"),
+        },
+        { type: "separator" },
+        {
+          label: "Theme: System",
+          type: "radio",
+          checked: true,
+          click: () => setTheme(win, null, state),
+        },
+        {
+          label: "Theme: Light",
+          type: "radio",
+          checked: false,
+          click: () => setTheme(win, "light", state),
+        },
+        {
+          label: "Theme: Dark",
+          type: "radio",
+          checked: false,
+          click: () => setTheme(win, "dark", state),
+        },
+        { type: "separator" },
+        {
+          label: "Color: Blue",
+          type: "radio",
+          checked: true,
+          click: () => setColor(win, 222),
+        },
+        {
+          label: "Color: Red",
+          type: "radio",
+          checked: false,
+          click: () => setColor(win, 10),
         },
       ],
     },
@@ -63,10 +118,14 @@ function createWindow() {
   });
   win.setAspectRatio(1);
   win.loadFile(path.join(__dirname, "web", "index.html"));
-  buildMenu(win);
+
+  const state = { themeOverride: null };
+  buildMenu(win, state);
 
   nativeTheme.on("updated", () => {
-    win.setBackgroundColor(currentBg());
+    if (state.themeOverride === null) {
+      win.setBackgroundColor(currentBg());
+    }
   });
 }
 
