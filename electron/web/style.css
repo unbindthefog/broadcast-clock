@@ -52,9 +52,26 @@ html, body {
   align-items: center;
   justify-content: center;
   user-select: none;
-  /* No clickable elements in this app, so the whole window can act as a
-     drag handle now that the native title bar is hidden. */
+}
+
+/* Stand-in for the native title bar we hid (titleBarStyle: "hiddenInset"
+   in main.js) — a plain top strip you can grab to move the window, like
+   any normal Mac app. Deliberately NOT the whole window: a full-window
+   drag region swallows all pointer events (including mousemove), which
+   broke the cursor auto-hide below. */
+.drag-strip {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 32px;
+  z-index: 10;
   -webkit-app-region: drag;
+}
+
+/* Toggled by clock.js after a few seconds of no mouse movement. */
+body.cursor-hidden {
+  cursor: none;
 }
 
 /* Time format switch: set data-format="hhmm" on <html> in index.html to

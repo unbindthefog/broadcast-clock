@@ -61,3 +61,17 @@ function updateClock() {
 
 updateClock();
 setInterval(updateClock, 250);
+
+const CURSOR_IDLE_MS = 3000;
+let cursorIdleTimer;
+
+function resetCursorIdleTimer() {
+  document.body.classList.remove("cursor-hidden");
+  clearTimeout(cursorIdleTimer);
+  cursorIdleTimer = setTimeout(() => {
+    document.body.classList.add("cursor-hidden");
+  }, CURSOR_IDLE_MS);
+}
+
+document.addEventListener("mousemove", resetCursorIdleTimer);
+resetCursorIdleTimer();

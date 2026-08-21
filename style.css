@@ -54,6 +54,11 @@ html, body {
   user-select: none;
 }
 
+/* Toggled by clock.js after a few seconds of no mouse movement. */
+body.cursor-hidden {
+  cursor: none;
+}
+
 /* Time format switch: set data-format="hhmm" on <html> in index.html to
    hide seconds. JS keeps computing/rendering them regardless — this only
    controls visibility. */
