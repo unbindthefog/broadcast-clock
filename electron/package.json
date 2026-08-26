@@ -16,9 +16,11 @@
   "build": {
     "appId": "com.broadcastclock.app",
     "productName": "Broadcast Clock",
-    "files": ["main.js", "web/**/*", "package.json"],
     "mac": {
       "category": "public.app-category.utilities"
     }
+  },
+  "dependencies": {
+    "electron-store": "^8.2.0"
   }
 }
